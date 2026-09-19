@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AI Renovate — Demo v1 Visual Design</title>
+<style>
+  :root {
+    --bg: #f4f1ec;
+    --panel: #ffffff;
+    --ink: #241f1a;
+    --muted: #8a8175;
+    --line: #e6e0d6;
+    --accent: #c96f4a;      /* warm terracotta — CTA / brand */
+    --accent-soft: #f3d9cc;
+    --sage: #7c9885;        /* secondary accent — success / applied states */
+    --sage-soft: #dfe8e1;
+    --advanced: #4a5b8c;    /* pro-mode accent, cooler/technical */
+    --shadow: 0 20px 45px rgba(36,31,26,0.12);
+    --radius: 28px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "SF Pro Display", "Segoe UI", Roboto, Arial, sans-serif;
+    padding: 48px 5vw 100px;
+  }
+  h1 { font-size: 28px; margin: 0 0 6px; letter-spacing: -0.3px; }
+  .lede { color: var(--muted); font-size: 15px; margin: 0 0 40px; max-width: 640px; line-height: 1.5; }
+
+  /* ---- style guide strip ---- */
+  .styleguide {
+    display: flex; gap: 28px; flex-wrap: wrap; align-items: center;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 20px;
+    padding: 20px 24px; margin-bottom: 56px; box-shadow: var(--shadow);
+  }
+  .sg-group { display: flex; flex-direction: column; gap: 8px; }
+  .sg-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); }
+  .swatches { display: flex; gap: 6px; }
+  .swatch { width: 30px; height: 30px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06); }
+  .type-sample { font-size: 20px; font-weight: 600; }
+  .type-sample.small { font-size: 13px; font-weight: 400; color: var(--muted); }
+
+  /* ---- gallery ---- */
+  .gallery { display: flex; gap: 36px; overflow-x: auto; padding-bottom: 20px; scroll-snap-type: x proximity; }
+  .step { flex: 0 0 auto; scroll-snap-align: start; width: 300px; }
+  .step-num { font-size: 12px; color: var(--accent); font-weight: 700; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .step-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .step-desc { font-size: 12.5px; color: var(--muted); line-height: 1.45; margin-bottom: 16px; min-height: 52px; }
+
+  /* ---- phone frame ---- */
+  .phone {
+    width: 300px; height: 620px; border-radius: 46px; background: #111;
+    padding: 12px; box-shadow: var(--shadow); position: relative;
+  }
+  .screen {
+    width: 100%; height: 100%; border-radius: 34px; overflow: hidden; position: relative;
+    background: var(--panel); display: flex; flex-direction: column;
+  }
+  .notch {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 26px; background: #111; border-radius: 0 0 16px 16px; z-index: 20;
+  }
+  .status-row {
+    display: flex; justify-content: space-between; padding: 10px 22px 4px; font-size: 11px; color: #fff; z-index: 15;
+  }
+
+  /* generic camera/AR background */
+  .cam-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, #cfd6d1 0%, #b9c3bc 40%, #a9b6ae 100%);
+  }
+  .cam-bg .floor { position: absolute; bottom: 0; left: 0; right: 0; height: 42%; background: linear-gradient(180deg, #ad9576, #8f7a5c); }
+  .cam-bg .wall-l { position: absolute; left: 0; top: 0; bottom: 42%; width: 30%; background: #c7cdc6; }
+  .cam-bg .wall-r { position: absolute; right: 0; top: 0; bottom: 42%; width: 70%; background: #d6dbd4; }
+  .cam-bg .window { position: absolute; top: 18%; right: 14%; width: 90px; height: 110px; background: linear-gradient(180deg,#eaf3f8,#cfe4ee); border: 6px solid #fff; border-radius: 4px; }
+
+  .top-bar {
+    position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center;
+    padding: 40px 16px 0;
+  }
+  .pill-btn {
+    background: rgba(20,18,15,0.55); color: #fff; font-size: 11px; padding: 7px 12px; border-radius: 20px;
+    display: flex; align-items: center; gap: 5px; backdrop-filter: blur(6px);
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sage); }
+
+  .bottom-sheet {
+    margin-top: auto; position: relative; z-index: 10;
+    background: rgba(255,255,255,0.97); border-radius: 22px 22px 0 0;
+    padding: 16px 18px 22px; box-shadow: 0 -10px 24px rgba(0,0,0,0.08);
+  }
+  .sheet-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+  .sheet-sub { font-size: 11.5px; color: var(--muted); margin-bottom: 14px; }
+
+  .btn {
+    display: block; text-align: center; padding: 13px; border-radius: 16px;
+    font-size: 14px; font-weight: 600; border: none;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-secondary { background: var(--sage-soft); color: #345140; }
+  .btn-outline { background: transparent; border: 1.5px solid var(--line); color: var(--ink); }
+
+  /* progress ring (scan step) */
+  .scan-ring {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 190px; height: 190px; border-radius: 50%;
+    border: 4px dashed rgba(255,255,255,0.85); z-index: 8;
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+  }
+  .scan-ring .pct { color: #fff; font-size: 30px; font-weight: 700; }
+  .scan-ring .lbl { color: #fff; font-size: 11px; opacity: 0.85; }
+
+  /* furniture ghost boxes on AR edit screen */
+  .item-box {
+    position: absolute; border: 2px solid var(--accent); border-radius: 6px; z-index: 9;
+    background: rgba(201,111,74,0.08);
+  }
+  .item-box.selected { border-color: var(--sage); background: rgba(124,152,133,0.14); }
+  .item-box .tag {
+    position: absolute; top: -22px; left: 0; background: var(--sage); color: #fff; font-size: 9px;
+    padding: 2px 7px; border-radius: 8px; white-space: nowrap;
+  }
+  .item-box.selected .tag { background: var(--accent); }
+  .handle { position: absolute; width: 14px; height: 14px; background: #fff; border: 2px solid var(--sage); border-radius: 50%; bottom: -7px; right: -7px; }
+
+  /* AR edit toolbar */
+  .toolbar {
+    position: relative; z-index: 10; display: flex; justify-content: space-around;
+    background: rgba(255,255,255,0.97); padding: 12px 8px 24px;
+  }
+  .tool { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 10px; color: var(--ink); }
+  .tool-icon { width: 40px; height: 40px; border-radius: 14px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+  .tool.active .tool-icon { background: var(--accent); color: #fff; }
+
+  /* mode toggle */
+  .mode-toggle {
+    display: flex; background: var(--bg); border-radius: 14px; padding: 3px; margin: 12px 16px 0; position: relative; z-index: 10;
+  }
+  .mode-toggle .opt { flex: 1; text-align: center; font-size: 11.5px; font-weight: 600; padding: 8px 0; border-radius: 11px; color: var(--muted); }
+  .mode-toggle .opt.on { background: var(--panel); color: var(--ink); box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+
+  /* furniture picker grid */
+  .picker-header { padding: 46px 18px 10px; }
+  .picker-title { font-size: 19px; font-weight: 700; }
+  .chips { display: flex; gap: 6px; padding: 10px 18px; overflow-x: auto; }
+  .chip { font-size: 11.5px; padding: 6px 13px; border-radius: 16px; background: var(--bg); color: var(--muted); white-space: nowrap; }
+  .chip.on { background: var(--accent); color: #fff; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 6px 18px 18px; overflow-y: auto; flex: 1; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+  .card-thumb { height: 92px; background: linear-gradient(135deg,#e7ded1,#d3c6b4); display:flex; align-items:center; justify-content:center; font-size: 26px; overflow:hidden; }
+  .card-thumb img { width:100%; height:100%; object-fit: cover; }
+  .card-info { padding: 8px 10px 10px; }
+  .card-name { font-size: 11.5px; font-weight: 600; }
+  .card-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .card-price { font-size: 10.5px; color: var(--sage); font-weight: 700; margin-top: 4px; }
+
+  /* easy mode simplified panel */
+  .easy-card {
+    margin: 14px 16px 0; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 14px;
+    display: flex; align-items: center; gap: 12px; position: relative; z-index: 10;
+  }
+  .easy-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--accent-soft); display:flex; align-items:center; justify-content:center; font-size: 20px; }
+  .easy-txt-title { font-size: 13px; font-weight: 700; }
+  .easy-txt-sub { font-size: 11px; color: var(--muted); }
+
+  footer { margin-top: 60px; color: var(--muted); font-size: 12px; max-width: 640px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+  <h1>AI Renovate — Demo v1 Visual Design</h1>
+  <p class="lede">Native iOS, LiDAR RoomPlan capture, RealityKit editing. Warm/neutral palette so real rooms and furniture stay the visual focus — the UI recedes. Five screens below walk the core demo flow.</p>
+
+  <div class="styleguide">
+    <div class="sg-group">
+      <div class="sg-label">Palette</div>
+      <div class="swatches">
+        <div class="swatch" style="background:var(--bg)"></div>
+        <div class="swatch" style="background:var(--accent)"></div>
+        <div class="swatch" style="background:var(--sage)"></div>
+        <div class="swatch" style="background:var(--advanced)"></div>
+        <div class="swatch" style="background:var(--ink)"></div>
+      </div>
+    </div>
+    <div class="sg-group">
+      <div class="sg-label">Type</div>
+      <div class="type-sample">Aa — SF Pro Display</div>
+      <div class="type-sample small">Body text, captions, labels</div>
+    </div>
+    <div class="sg-group">
+      <div class="sg-label">Roles</div>
+      <div class="type-sample small">Terracotta = primary action &nbsp;·&nbsp; Sage = success / selected &nbsp;·&nbsp; Blue = Advanced mode</div>
+    </div>
+  </div>
+
+  <div class="gallery">
+
+    <!-- STEP 1 : Launch / device check -->
+    <div class="step">
+      <div class="step-num">STEP 1</div>
+      <div class="step-title">Launch — device check</div>
+      <div class="step-desc">App detects LiDAR silently at launch. If found, goes straight to scan. If not found (demo v1 requirement), shows this notice instead of a broken feature.</div>
+      <div class="phone"><div class="screen">
+        <div class="notch"></div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 28px; text-align:center; background: var(--bg);">
+          <div style="width:64px;height:64px;border-radius:20px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:18px;">🏠</div>
+          <div style="font-size:20px;font-weight:700;margin-bottom:8px;">AI Renovate</div>
+          <div style="font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:22px;">This iPhone has a LiDAR scanner — you're ready for full 3D room scanning.</div>
+          <div class="btn btn-primary" style="width:100%;">Scan My Room</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- STEP 2 : Scanning -->
+    <div class="step">
+      <div class="step-num">STEP 2</div>
+      <div class="step-title">Room scan (RoomPlan)</div>
+      <div class="step-desc">User walks the room; live mesh + wall/window detection ring shows scan completeness. Bottom sheet gives plain-language guidance.</div>
+      <div class="phone"><div class="screen">
+        <div class="notch"></div>
+        <div class="cam-bg"><div class="wall-r"></div><div class="wall-l"></div><div class="floor"></div><div class="window"></div></div>
+        <div class="top-bar"><div class="pill-btn">✕ Cancel</div><div class="pill-btn"><span class="dot"></span> Scanning</div></div>
+        <div class="scan-ring"><div class="pct">76%</div><div class="lbl">keep moving</div></div>
+        <div class="bottom-sheet">
+          <div class="sheet-title">Scanning your room</div>
+          <div class="sheet-sub">Slowly point your camera at the walls, floor, and windows.</div>
+          <div class="btn btn-outline">Finish Early</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- STEP 3 : AR Edit mode (Easy) -->
+    <div class="step">
+      <div class="step-num">STEP 3A</div>
+      <div class="step-title">Edit mode — Easy</div>
+      <div class="step-desc">Tap a piece, drag to move, pinch to rotate. One simplified card explains the selected item in plain language — this is grandma's view.</div>
+      <div class="phone"><div class="screen">
+        <div class="notch"></div>
+        <div class="cam-bg"><div class="wall-r"></div><div class="wall-l"></div><div class="floor"></div><div class="window"></div></div>
+        <div class="item-box selected" style="left:38%; top:58%; width:80px; height:56px;"><div class="tag">Sofa — selected</div><div class="handle"></div></div>
+        <div class="item-box" style="left:18%; top:44%; width:46px; height:60px;"></div>
+        <div class="top-bar"><div class="pill-btn">✕ Exit</div><div class="pill-btn">💾 Save</div></div>
+        <div class="mode-toggle"><div class="opt on">Easy</div><div class="opt">Advanced</div></div>
+        <div class="easy-card">
+          <div class="easy-icon">🛋️</div>
+          <div>
+            <div class="easy-txt-title">Sofa selected</div>
+            <div class="easy-txt-sub">Drag to move it around the room</div>
+          </div>
+        </div>
+        <div class="toolbar" style="margin-top:auto;">
+          <div class="tool active"><div class="tool-icon">➕</div>Add</div>
+          <div class="tool"><div class="tool-icon">🔄</div>Rotate</div>
+          <div class="tool"><div class="tool-icon">🗑️</div>Delete</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- STEP 4 : AR Edit mode (Advanced) -->
+    <div class="step">
+      <div class="step-num">STEP 3B</div>
+      <div class="step-title">Edit mode — Advanced</div>
+      <div class="step-desc">Same scene, same tap/drag mechanic — but exposes exact measurements, snap-to-grid, and layer list for pro/decorator users.</div>
+      <div class="phone"><div class="screen">
+        <div class="notch"></div>
+        <div class="cam-bg"><div class="wall-r"></div><div class="wall-l"></div><div class="floor"></div><div class="window"></div></div>
+        <div class="item-box selected" style="left:38%; top:58%; width:80px; height:56px;"><div class="tag">Sofa · 210×90cm</div><div class="handle"></div></div>
+        <div class="item-box" style="left:18%; top:44%; width:46px; height:60px;"></div>
+        <div class="top-bar"><div class="pill-btn">✕ Exit</div><div class="pill-btn">💾 Save</div></div>
+        <div class="mode-toggle"><div class="opt">Easy</div><div class="opt on" style="color:var(--advanced)">Advanced</div></div>
+        <div class="easy-card" style="align-items:flex-start; flex-direction:column; gap:8px;">
+          <div style="display:flex; justify-content:space-between; width:100%; font-size:11px; color:var(--muted);">
+            <span>Position X: 1.84m</span><span>Rotation: 42°</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; width:100%; font-size:11px; color:var(--muted);">
+            <span>Position Y: 0.60m</span><span>Snap: ON</span>
+          </div>
+          <div class="btn btn-secondary" style="width:100%; padding:9px; font-size:12px;">Layer List (6 items)</div>
+        </div>
+        <div class="toolbar">
+          <div class="tool"><div class="tool-icon">📐</div>Measure</div>
+          <div class="tool active"><div class="tool-icon">🧲</div>Snap</div>
+          <div class="tool"><div class="tool-icon">🗑️</div>Delete</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- STEP 5 : Furniture picker -->
+    <div class="step">
+      <div class="step-num">STEP 4</div>
+      <div class="step-title">Furniture picker</div>
+      <div class="step-desc">Card-grid browser, styled after the reference video's "select furniture" flow — category chips filter a curated 20-model demo set (no live retailer pricing yet).</div>
+      <div class="phone"><div class="screen">
+        <div class="notch"></div>
+        <div style="display:flex; flex-direction:column; height:100%;">
+          <div class="picker-header"><div class="picker-title">Add Furniture</div></div>
+          <div class="chips">
+            <div class="chip on">All</div><div class="chip">Seating</div><div class="chip">Tables</div>
+            <div class="chip">Storage</div><div class="chip">Lighting</div><div class="chip">Beds</div>
+          </div>
+          <div class="grid">
+            <div class="card"><div class="card-thumb"><img src="https://images.unsplash.com/photo-1698936061086-2bf99c7b9fc5?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="Sofa"></div><div class="card-info"><div class="card-name">Oslo Sofa</div><div class="card-sub">Scandi · Fabric</div><div class="card-price">Demo item</div></div></div>
+            <div class="card"><div class="card-thumb"><img src="https://images.unsplash.com/photo-1601366533287-5ee4c763ae4e?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="Armchair"></div><div class="card-info"><div class="card-name">Bistro Chair</div><div class="card-sub">Modern · Wood</div><div class="card-price">Demo item</div></div></div>
+            <div class="card"><div class="card-thumb"><img src="https://images.unsplash.com/photo-1425219366480-47fdbbe0e83b?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="Bed"></div><div class="card-info"><div class="card-name">Malm Bed</div><div class="card-sub">Minimal · Oak</div><div class="card-price">Demo item</div></div></div>
+            <div class="card"><div class="card-thumb"><img src="https://images.unsplash.com/photo-1752061159819-f290b8f48b08?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="Side table"></div><div class="card-info"><div class="card-name">Cube Side Table</div><div class="card-sub">Modern · Accent</div><div class="card-price">Demo item</div></div></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <footer>
+    Note: camera backgrounds above are flat mockup placeholders — in the real app this is a live AR camera feed with the RoomPlan mesh overlaid. Furniture set is the ~20-model curated demo library (phase 1); retailer catalog with live SE pricing (IKEA/Rusta/Mio) is a later phase per the agreed scope.
+  </footer>
+
+</body>
+</html>
